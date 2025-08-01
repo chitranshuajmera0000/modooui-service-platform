@@ -85,6 +85,8 @@ export const getReceivedQuotations = async (req: AuthenticatedRequest, res: Resp
                 createdAt: 'desc'
             }
         })
+
+        res.json({ quotations });
     } catch (error) {
         res.status(500).json({ error: 'Internal Server Error ' })
     }
