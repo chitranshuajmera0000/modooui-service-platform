@@ -6,6 +6,7 @@ import helmet from "helmet";
 import authRouter from './routes/auth'
 import userRouter from './routes/user'
 import quotationRouter from './routes/quotations'
+import serviceRouter from './routes/services'
 
 dotenv.config();
 
@@ -20,5 +21,6 @@ app.use('/api', healthRouter);
 app.use('/api/auth', authRouter);
 app.use('/api/users', userRouter);
 app.use('/api/quotations', quotationRouter);
+app.use('/api/services', serviceRouter)
 
 export default app;
