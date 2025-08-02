@@ -1,6 +1,8 @@
 {
   "name": "servicehub-deployment",
   "version": "1.0.0",
+  "description": "ServiceHub NestJS Backend Deployment",
+  "main": "backend-nestjs/dist/main.js",
   "scripts": {
     "build": "npm run build:backend",
     "build:frontend": "cd frontend && npm install && npm run build",
@@ -11,7 +13,13 @@
     "dev:frontend": "cd frontend && npm run dev",
     "dev:backend": "cd backend-nestjs && npm run start:dev",
     "deploy": "vercel --prod",
-    "preview": "vercel"
+    "preview": "vercel",
+    "postinstall": "cd backend-nestjs && npm install && npx prisma generate"
+  },
+  "keywords": ["nestjs", "railway", "backend"],
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
   },
   "devDependencies": {
     "concurrently": "^8.2.0"
