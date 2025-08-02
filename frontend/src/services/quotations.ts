@@ -1,5 +1,68 @@
 import { apiService } from './api';
 
+// Backend quotation interface
+interface BackendQuotation {
+  id: string;
+  status?: string;
+  price?: number;
+  estimatedDuration?: string;
+  createdAt: string;
+  updatedAt?: string;
+  provider?: {
+    id: string;
+    name: string;
+    email: string;
+  };
+  providerId?: string;
+  request?: {
+    id?: string;
+    description?: string;
+    budget?: number;
+    userId?: string;
+    user?: {
+      id: string;
+      name: string;
+      email: string;
+    };
+    service?: {
+      id: string;
+      name: string;
+      category: string;
+      provider?: {
+        id: string;
+        name: string;
+        email: string;
+      };
+    };
+  };
+  description?: string;
+}
+
+// API response interfaces
+interface QuotationsApiResponse {
+  quotations: BackendQuotation[];
+}
+
+interface QuotationCreateResponse {
+  message: string;
+  request: {
+    id?: string;
+    userId?: string;
+    createdAt?: string;
+    updatedAt?: string;
+    service?: {
+      id: string;
+      name: string;
+      category: string;
+      provider?: {
+        id: string;
+        name: string;
+        email: string;
+      };
+    };
+  };
+}
+
 export interface CreateQuotationRequest {
   serviceId: string;
   description: string;
@@ -43,8 +106,8 @@ class QuotationService {
   async getQuotations(): Promise<{ quotations: QuotationResponse[] }> {
     try {
       const [received, sent] = await Promise.all([
-        apiService.get<{ quotations: any[] }>('/quotations/received'),
-        apiService.get<{ quotations: any[] }>('/quotations/sent')
+        apiService.get<QuotationsApiResponse>('/quotations/received'),
+        apiService.get<QuotationsApiResponse>('/quotations/sent')
       ]);
       
       // Combine and transform quotations
@@ -54,7 +117,7 @@ class QuotationService {
       ];
       
       return { quotations: allQuotations };
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Failed to fetch quotations:', error);
       // Return mock data for development
       return {
@@ -94,17 +157,23 @@ class QuotationService {
   }
 
   // Helper method to transform backend quotation data
-  private transformBackendQuotation(backendQuotation: any): QuotationResponse {
+  private transformBackendQuotation(backendQuotation: BackendQuotation): QuotationResponse {
+    const status = backendQuotation.status?.toLowerCase();
+    const validStatus: 'pending' | 'accepted' | 'rejected' | 'completed' = 
+      (status === 'pending' || status === 'accepted' || status === 'rejected' || status === 'completed') 
+        ? status 
+        : 'pending';
+
     return {
       id: backendQuotation.id,
       serviceId: backendQuotation.request?.service?.id || 'unknown',
       customerId: backendQuotation.request?.user?.id || backendQuotation.request?.userId || 'unknown',
-      providerId: backendQuotation.provider?.id || backendQuotation.providerId,
-      message: backendQuotation.request?.description || backendQuotation.description,
+      providerId: backendQuotation.provider?.id || backendQuotation.providerId || 'unknown',
+      message: backendQuotation.request?.description || backendQuotation.description || '',
       budget: backendQuotation.request?.budget,
       timeline: backendQuotation.estimatedDuration,
       requirements: undefined,
-      status: backendQuotation.status?.toLowerCase() || 'pending',
+      status: validStatus,
       createdAt: backendQuotation.createdAt,
       updatedAt: backendQuotation.updatedAt || backendQuotation.createdAt,
       service: {
@@ -119,7 +188,7 @@ class QuotationService {
         email: backendQuotation.request?.user?.email || 'customer@example.com',
       },
       provider: {
-        id: backendQuotation.provider?.id || backendQuotation.providerId,
+        id: backendQuotation.provider?.id || backendQuotation.providerId || 'unknown',
         name: backendQuotation.provider?.name || 'Unknown Provider',
         email: backendQuotation.provider?.email || 'provider@example.com',
       },
@@ -130,7 +199,7 @@ class QuotationService {
   async getServiceQuotations(serviceId: string): Promise<{ quotations: QuotationResponse[] }> {
     try {
       return await apiService.get<{ quotations: QuotationResponse[] }>(`/quotations/service/${serviceId}`);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Failed to fetch service quotations:', error);
       return { quotations: [] };
     }
@@ -139,11 +208,11 @@ class QuotationService {
   // Get quotations received by provider
   async getReceivedQuotations(): Promise<{ quotations: QuotationResponse[] }> {
     try {
-      const response = await apiService.get<{ quotations: any[] }>('/quotations/received');
+      const response = await apiService.get<QuotationsApiResponse>('/quotations/received');
       return {
         quotations: response.quotations.map(q => this.transformBackendQuotation(q))
       };
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Failed to fetch received quotations:', error);
       // Return mock data for development
       return {
@@ -186,7 +255,7 @@ class QuotationService {
   async createQuotation(data: CreateQuotationRequest): Promise<QuotationResponse> {
     try {
       // Use debug endpoint for testing
-      const response = await apiService.post<{ message: string; request: any }>('/quotations/request-debug', data);
+      const response = await apiService.post<QuotationCreateResponse>('/quotations/request-debug', data);
       
       console.log('Quotation response:', response);
       
@@ -220,12 +289,13 @@ class QuotationService {
           email: response.request?.service?.provider?.email || 'provider@example.com',
         },
       };
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Failed to create quotation:', error);
       
       // Check if it's a specific error we can handle
-      if (error?.response?.status === 500) {
-        console.error('Server error details:', error.response.data);
+      const axiosError = error as { response?: { status?: number; data?: unknown } };
+      if (axiosError?.response?.status === 500) {
+        console.error('Server error details:', axiosError.response.data);
       }
       
       // Return mock success for development
@@ -272,7 +342,7 @@ class QuotationService {
         status,
         response,
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Failed to update quotation status:', error);
       throw error;
     }

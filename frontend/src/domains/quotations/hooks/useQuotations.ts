@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { quotationService } from '../../../services/quotations';
-import type { CreateQuotationRequest, QuotationResponse } from '../../../services/quotations';
+import type { CreateQuotationRequest } from '../../../services/quotations';
 
 // Get all quotations for the current user
 export function useQuotations() {

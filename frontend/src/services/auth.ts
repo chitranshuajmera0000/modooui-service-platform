@@ -59,9 +59,9 @@ class AuthService {
   async logout(): Promise<void> {
     try {
       return await apiService.post<void>('/auth/logout');
-    } catch (_error) {
+    } catch (error: unknown) {
       // Even if logout fails on server, we should clear local state
-      console.warn('Logout failed on server, but clearing local state');
+      console.warn('Logout failed on server, but clearing local state', error);
     }
   }
 
