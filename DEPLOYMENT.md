@@ -27,9 +27,9 @@ NODE_ENV=production
 VERCEL=1
 VERCEL_ENV=production
 
-NEXT_PUBLIC_API_URL=https://your-project-name.vercel.app/api
-FRONTEND_URL=https://your-project-name.vercel.app
-ALLOWED_ORIGINS=https://your-project-name.vercel.app,http://localhost:3000
+NEXT_PUBLIC_API_URL=https://modooui-service-platform.vercel.app/api
+FRONTEND_URL=https://modooui-service-platform.vercel.app
+ALLOWED_ORIGINS=https://modooui-service-platform.vercel.app,http://localhost:3000
 ```
 
 ### 3. **Deploy**
@@ -56,7 +56,7 @@ ServiceHub/
 
 ## ✅ **Post-Deployment Checklist**
 1. ✅ Frontend loads at your Vercel domain
-2. ✅ API endpoints work: `https://your-domain.vercel.app/api/auth/me`
+2. ✅ API endpoints work: `https://modooui-service-platform.vercel.app/api/test`
 3. ✅ Database connection is established
 4. ✅ Authentication flows work
 5. ✅ Search functionality works
