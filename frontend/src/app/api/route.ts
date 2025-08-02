@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 
-export async function GET() {
+export async function GET(): Promise<NextResponse> {
   return NextResponse.json({
     message: 'ServiceHub API is working!',
     timestamp: new Date().toISOString(),
@@ -15,7 +15,7 @@ export async function GET() {
   });
 }
 
-export async function OPTIONS() {
+export async function OPTIONS(): Promise<Response> {
   return new Response(null, {
     status: 200,
     headers: {
