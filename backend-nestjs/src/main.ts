@@ -1,13 +1,20 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   
-  // Enhanced CORS for Vercel deployment
+  // Global validation pipe
+  app.useGlobalPipes(new ValidationPipe({
+    whitelist: true,
+    transform: true,
+    forbidNonWhitelisted: true,
+  }));
+  
+  // Enhanced CORS for Railway deployment
   const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || [
     'http://localhost:3000',
-    'http://localhost:3001',
     'https://modooui-service-platform.vercel.app'
   ];
   
@@ -18,19 +25,13 @@ async function bootstrap() {
     allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
   });
   
-  // Vercel compatibility
-  const port = process.env.PORT ?? 3001;
+  // Railway uses PORT environment variable
+  const port = process.env.PORT || 3001;
   await app.listen(port, '0.0.0.0');
   
-  if (process.env.NODE_ENV !== 'production') {
-    console.log(`Backend server running on http://localhost:${port}`);
-  }
+  console.log(`🚀 NestJS Backend running on port ${port}`);
+  console.log(`📊 Environment: ${process.env.NODE_ENV}`);
+  console.log(`🔗 CORS Origins: ${allowedOrigins.join(', ')}`);
 }
 
-// Export for Vercel serverless functions
-export default bootstrap;
-
-// Start the application
-if (require.main === module) {
-  bootstrap();
-}
+bootstrap();
