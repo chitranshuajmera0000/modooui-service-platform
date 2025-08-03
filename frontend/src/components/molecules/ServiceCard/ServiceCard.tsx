@@ -16,7 +16,7 @@ export function ServiceCard({ service, onRequestQuote, className }: ServiceCardP
       className
     )}>
       {/* Clickable service content */}
-      <Link href={`/services/${service.id}`} className="block p-4 sm:p-6 hover:bg-gray-50 transition-colors active:bg-gray-100">
+      <Link href={`/services/${service.id}`} prefetch={false} className="block p-4 sm:p-6 hover:bg-gray-50 transition-colors active:bg-gray-100">
         {/* Service Info */}
         <div className="space-y-3">
           <div className="flex justify-between items-start gap-3">

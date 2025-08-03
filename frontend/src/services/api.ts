@@ -3,9 +3,6 @@ import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 // Base API configuration
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://modooui-service-platform.onrender.com';
 
-console.log('🔥 API_BASE_URL determined as:', API_BASE_URL);
-console.log('🔥 NEXT_PUBLIC_API_URL env var:', process.env.NEXT_PUBLIC_API_URL);
-
 // Helper function to get token from localStorage
 const getAuthToken = (): string | null => {
   if (typeof window === 'undefined') return null;
@@ -62,18 +59,12 @@ class ApiService {
   }
 
   async get<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
-    console.log('🔥 Making GET request to:', `${API_BASE_URL}${url}`);
-    console.log('🔥 Full config:', { ...config, baseURL: API_BASE_URL });
     const response = await this.client.get<T>(url, config);
-    console.log('✅ GET response:', response.data);
     return response.data;
   }
 
   async post<T>(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<T> {
-    console.log('🔥 Making POST request to:', `${API_BASE_URL}${url}`);
-    console.log('🔥 POST data:', data);
     const response = await this.client.post<T>(url, data, config);
-    console.log('✅ POST response:', response.data);
     return response.data;
   }
 
