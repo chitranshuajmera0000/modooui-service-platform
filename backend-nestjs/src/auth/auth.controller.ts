@@ -1,8 +1,8 @@
-import { Controller, Post, Body, ValidationPipe, Get, UseGuards, Req, Param } from '@nestjs/common';
+import { Controller, Post, Body, ValidationPipe, Get, UseGuards, Req, Param, Options, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterDto, LoginDto, ForgotPasswordDto, ResetPasswordDto, RefreshTokenDto } from '../common/dto/auth.dto';
 import { JwtAuthGuard } from './jwt-auth.guard';
-import type { Request } from 'express';
+import type { Request, Response } from 'express';
 
 // Extend Express Request type to include user
 interface AuthenticatedRequest extends Request {
@@ -15,6 +15,15 @@ interface AuthenticatedRequest extends Request {
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
+
+  @Options('*')
+  handleOptions(@Res() res: Response) {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With, Accept, Origin');
+    res.header('Access-Control-Allow-Credentials', 'true');
+    res.sendStatus(204);
+  }
 
   @Post('register')
   async register(@Body(ValidationPipe) registerDto: RegisterDto) {

@@ -12,15 +12,23 @@ async function bootstrap() {
     forbidNonWhitelisted: true,
   }));
   
-  // Enhanced CORS for Railway deployment
-  const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',').map(origin => origin.trim()) || [
-    'http://localhost:3000',
-    'https://modooui-service-platform.vercel.app'
-  ];
+  // Aggressive CORS configuration for Railway
+  app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS,PATCH');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+    res.header('Access-Control-Allow-Credentials', 'true');
+    
+    if (req.method === 'OPTIONS') {
+      res.sendStatus(204);
+    } else {
+      next();
+    }
+  });
   
-  // More permissive CORS for debugging
+  // Also enable NestJS CORS as backup
   app.enableCors({
-    origin: true, // Allow all origins temporarily for debugging
+    origin: true,
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'X-Requested-With', 'Origin'],
@@ -41,8 +49,7 @@ async function bootstrap() {
   
   console.log(`🚀 NestJS Backend running on port ${port}`);
   console.log(`📊 Environment: ${process.env.NODE_ENV}`);
-  console.log(`🔗 CORS Origins: ${allowedOrigins.join(', ')}`);
-  console.log(`🌐 CORS: Temporarily allowing all origins for debugging`);
+  console.log(`🌐 CORS: Aggressive configuration enabled`);
 }
 
 bootstrap();
