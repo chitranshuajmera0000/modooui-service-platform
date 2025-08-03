@@ -104,16 +104,15 @@ const mockServices: Service[] = [
 export class ServicesService {
   // Get all services
   async getAllServices(category?: string): Promise<{ services: Service[] }> {
+    console.log('🔥 API_BASE_URL:', process.env.NEXT_PUBLIC_API_URL);
     try {
       const params = category ? { category } : {};
-      return await apiService.get<{ services: Service[] }>('/services', { params });
+      const result = await apiService.get<{ services: Service[] }>('/services', { params });
+      console.log('✅ API call successful:', result);
+      return result;
     } catch (error) {
-      console.warn('Backend not available, using mock data:', error);
-      // Filter by category if provided
-      const filteredServices = category 
-        ? mockServices.filter(service => service.category === category)
-        : mockServices;
-      return { services: filteredServices };
+      console.error('❌ API call failed:', error);
+      throw error; // Don't use mock data, throw the error
     }
   }
 
