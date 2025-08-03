@@ -118,15 +118,14 @@ export class ServicesService {
 
   // Get service by ID
   async getServiceById(id: string): Promise<{ service: Service }> {
+    console.log('🔥 Getting service by ID:', id);
     try {
-      return await apiService.get<{ service: Service }>(`/services/${id}`);
+      const result = await apiService.get<{ service: Service }>(`/services/${id}`);
+      console.log('✅ Service API call successful:', result);
+      return result;
     } catch (error) {
-      console.warn('Backend not available, using mock data:', error);
-      const service = mockServices.find(s => s.id === id);
-      if (!service) {
-        throw new Error('Service not found');
-      }
-      return { service };
+      console.error('❌ Service API call failed:', error);
+      throw error; // Don't use mock data, throw the error
     }
   }
 
