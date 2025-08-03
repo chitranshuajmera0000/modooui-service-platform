@@ -59,12 +59,18 @@ class ApiService {
   }
 
   async get<T>(url: string, config?: AxiosRequestConfig): Promise<T> {
+    console.log('🔥 Making GET request to:', `${API_BASE_URL}${url}`);
+    console.log('🔥 Full config:', { ...config, baseURL: API_BASE_URL });
     const response = await this.client.get<T>(url, config);
+    console.log('✅ GET response:', response.data);
     return response.data;
   }
 
   async post<T>(url: string, data?: unknown, config?: AxiosRequestConfig): Promise<T> {
+    console.log('🔥 Making POST request to:', `${API_BASE_URL}${url}`);
+    console.log('🔥 POST data:', data);
     const response = await this.client.post<T>(url, data, config);
+    console.log('✅ POST response:', response.data);
     return response.data;
   }
 
