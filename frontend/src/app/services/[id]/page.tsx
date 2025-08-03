@@ -16,6 +16,21 @@ export default function ServiceDetailPage() {
   const router = useRouter();
   const serviceId = params.id as string;
   
+  // Early return if no service ID
+  if (!serviceId) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">Invalid Service</h1>
+          <p className="text-gray-600 mb-8">No service ID provided.</p>
+          <Link href="/">
+            <Button>Back to Home</Button>
+          </Link>
+        </div>
+      </div>
+    );
+  }
+  
   const { data, isLoading, error } = useServiceById(serviceId);
   const { isAuthenticated, user } = useAuthStore();
   const createQuotationMutation = useCreateQuotation();
