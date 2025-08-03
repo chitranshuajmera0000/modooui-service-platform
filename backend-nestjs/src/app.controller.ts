@@ -15,6 +15,18 @@ export class AppController {
     res.sendStatus(204);
   }
 
+  @Get('test-cors')
+  testCors(@Res() res: Response) {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type');
+    res.json({ 
+      message: 'CORS test successful',
+      timestamp: new Date().toISOString(),
+      headers: res.getHeaders()
+    });
+  }
+
   @Get()
   getHello(): string {
     return this.appService.getHello();
