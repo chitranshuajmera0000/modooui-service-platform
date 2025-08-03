@@ -1,7 +1,10 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 
 // Base API configuration
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://modooui-service-platform.onrender.com';
+
+console.log('🔥 API_BASE_URL determined as:', API_BASE_URL);
+console.log('🔥 NEXT_PUBLIC_API_URL env var:', process.env.NEXT_PUBLIC_API_URL);
 
 // Helper function to get token from localStorage
 const getAuthToken = (): string | null => {

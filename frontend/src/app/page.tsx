@@ -12,6 +12,10 @@ export default function HomePage() {
   const [selectedCategory, setSelectedCategory] = useState<string>();
   const [searchQuery, setSearchQuery] = useState<string>('');
   
+  // DEBUG: Log environment variable
+  console.log('🔥 NEXT_PUBLIC_API_URL from page:', process.env.NEXT_PUBLIC_API_URL);
+  console.log('🔥 All env vars:', Object.keys(process.env).filter(k => k.startsWith('NEXT_PUBLIC')));
+  
   // Use our TanStack Query hook
   const { data, isLoading, error } = useServices(selectedCategory);
   const { isAuthenticated, user } = useAuthStore();
