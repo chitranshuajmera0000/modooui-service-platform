@@ -16,7 +16,19 @@ export default function ServiceDetailPage() {
   const router = useRouter();
   const serviceId = params.id as string;
   
-  // Early return if no service ID
+  // All hooks must be called at the top level
+  const { data, isLoading, error } = useServiceById(serviceId);
+  const { isAuthenticated, user } = useAuthStore();
+  const createQuotationMutation = useCreateQuotation();
+  
+  const [showQuoteForm, setShowQuoteForm] = useState(false);
+  const [quoteRequest, setQuoteRequest] = useState({
+    description: '',
+    budget: '',
+    location: ''
+  });
+
+  // Handle invalid service ID after hooks
   if (!serviceId) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -30,17 +42,6 @@ export default function ServiceDetailPage() {
       </div>
     );
   }
-  
-  const { data, isLoading, error } = useServiceById(serviceId);
-  const { isAuthenticated, user } = useAuthStore();
-  const createQuotationMutation = useCreateQuotation();
-  
-  const [showQuoteForm, setShowQuoteForm] = useState(false);
-  const [quoteRequest, setQuoteRequest] = useState({
-    description: '',
-    budget: '',
-    location: ''
-  });
 
   if (isLoading) {
     return (
