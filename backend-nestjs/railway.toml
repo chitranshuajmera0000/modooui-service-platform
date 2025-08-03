@@ -3,6 +3,12 @@ buildCommand = "npm ci && npx prisma generate && npm run build"
 
 [deploy]
 startCommand = "npm run start:prod"
+healthcheckPath = "/health"
+healthcheckTimeout = 300
+restartPolicyType = "on_failure"
 
 [env]
 NODE_ENV = "production"
+
+[networking]
+servicePort = 8080
