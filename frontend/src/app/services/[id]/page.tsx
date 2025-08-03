@@ -8,6 +8,9 @@ import { useCreateQuotation } from '@/domains/quotations/hooks/useQuotations';
 import { Button } from '@/components/atoms/Button/Button';
 import { useAuthStore } from '@/stores';
 
+// This ensures the page is dynamically rendered
+export const dynamic = 'force-dynamic';
+
 export default function ServiceDetailPage() {
   const params = useParams();
   const router = useRouter();
