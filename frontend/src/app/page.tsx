@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useServices } from '@/domains/services/hooks/useServices';
 import { Button } from '@/components/atoms/Button/Button';
 import { SearchBar } from '@/components/molecules/SearchBar/SearchBar';
@@ -11,6 +12,7 @@ import { useAuthStore } from '@/stores';
 export default function HomePage() {
   const [selectedCategory, setSelectedCategory] = useState<string>();
   const [searchQuery, setSearchQuery] = useState<string>('');
+  const router = useRouter();
   
   // DEBUG: Log environment variable
   console.log('🔥 NEXT_PUBLIC_API_URL from page:', process.env.NEXT_PUBLIC_API_URL);
@@ -32,11 +34,11 @@ export default function HomePage() {
   const handleRequestQuote = (serviceId: string) => {
     if (!isAuthenticated) {
       // Redirect to login with return URL
-      window.location.href = `/login?redirect=/services/${serviceId}`;
+      router.push(`/login?redirect=/services/${serviceId}`);
       return;
     }
     // Navigate to service detail page for quote request
-    window.location.href = `/services/${serviceId}`;
+    router.push(`/services/${serviceId}`);
   };
 
   const handleSearch = (query: string) => {
